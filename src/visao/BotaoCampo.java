@@ -64,6 +64,7 @@ public class BotaoCampo extends JButton implements CampoObservador, MouseListene
 
         if (campo.isMinado()) {
             setBackground(BG_EXPLODIR);
+            setText("*");
             setBackground(Color.RED);
             return;
         }
