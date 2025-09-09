@@ -109,6 +109,7 @@ public class BotaoCampo extends JButton implements CampoObservador, MouseListene
         setBackground(BG_EXPLODIR);
         setForeground(Color.RED);
         setText("X");
+        setForeground(Color.RED);
     }
 
     // Define o estilo visual padrão
