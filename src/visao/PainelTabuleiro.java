@@ -10,27 +10,31 @@ public class PainelTabuleiro extends JPanel {
 
     // Construtor que cria o painel com base no tabuleiro
     public PainelTabuleiro(Tabuleiro tabuleiro) {
-        // Define o layout como grid com base nas dimensões do tabuleiro
         setLayout(new GridLayout(
                 tabuleiro.getLinhas(), tabuleiro.getColunas()));
 
-        // Adiciona um botão para cada campo do tabuleiro
         tabuleiro.paraCadaCampo(c -> add(new BotaoCampo(c)));
 
-        // CÓDIGO CORRIGIDO
         tabuleiro.registrarObservador(e -> {
-            // Coloca a exibição do diálogo na thread de eventos (EDT)
             SwingUtilities.invokeLater(() -> {
-                String mensagem = e.isGanhou() ? "Você GANHOU!!!" : "Você PERDEU!!";
-                JOptionPane.showMessageDialog(null, mensagem);
+                String mensagem = e.isGanhou() ? "Você GANHOU! :D" : "VOCÊ PERDEU! :(";
 
-                // AGORA, A PARTE IMPORTANTE:
-                // Agenda a reinicialização como uma NOVA tarefa na EDT.
-                // Isso dá tempo para o JOptionPane fechar e a tela se repintar
-                // antes que o trabalho pesado de reiniciar comece.
-                SwingUtilities.invokeLater(() -> {
-                    tabuleiro.reiniciar();
-                });
+                // Garante que o painel esteja repintado antes do JOptionPane
+                this.revalidate();
+                this.repaint();
+
+                // Usa a janela pai em vez de "null"
+                Component parent = SwingUtilities.getWindowAncestor(this);
+
+                JOptionPane.showMessageDialog(
+                        parent,  // importante para evitar o fundo preto
+                        mensagem,
+                        e.isGanhou() ? "Parabéns" : "Game Over",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+
+                // Agenda a reinicialização após o diálogo fechar
+                SwingUtilities.invokeLater(tabuleiro::reiniciar);
             });
         });
     }
